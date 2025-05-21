@@ -9,11 +9,19 @@ This is a Spring Boot application that implements the BFHL API as per the requir
 ## How to Run
 1. Clone the repository
 2. Navigate to the project directory
-3. Run the following command:
+3. Build the project:
+   ```
+   mvn clean package
+   ```
+4. Run the application:
    ```
    mvn spring-boot:run
    ```
-4. The application will start on port 8081
+   or
+   ```
+   java -jar target/bfhl-0.0.1-SNAPSHOT.jar
+   ```
+5. The application will start on port 8081
 
 ## API Endpoints
 
