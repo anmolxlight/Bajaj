@@ -6,6 +6,11 @@ This is a Spring Boot application that implements the BFHL API as per the requir
 - Java 11
 - Maven
 
+## Features
+- Uses RestTemplate for HTTP communication
+- Implements JWT-based authentication for the SQL submission API
+- Automatically triggers SQL query submission on application startup (no endpoint required)
+
 ## How to Run
 1. Clone the repository
 2. Navigate to the project directory
@@ -22,6 +27,15 @@ This is a Spring Boot application that implements the BFHL API as per the requir
    java -jar target/bfhl-0.0.1-SNAPSHOT.jar
    ```
 5. The application will start on port 8081
+6. The SQL query will be automatically submitted on startup
+
+## Note on Webhook Authentication
+The application attempts to submit the SQL query to the webhook with multiple authentication methods:
+1. Using Bearer token in Authorization header
+2. Using plain token in Authorization header
+3. Using custom headers (x-access-token, x-api-key, etc.)
+
+However, the webhook API may require specific credentials or may not be accessible. If you have the correct credentials, you can add them to `application.properties` in the `bfhl.webhook.token` property.
 
 ## API Endpoints
 
@@ -59,41 +73,29 @@ Processes an array of data and returns the separated numbers and alphabets.
 
 ### 3. SQL Query Submission
 
-The application provides several endpoints to handle the SQL query submission:
+The SQL query is automatically submitted when the application starts. However, the following endpoints are still available:
 
 #### POST /sql/submit-with-token
-Submits the SQL query to the webhook URL using the provided access token.
+Submits the SQL query to the webhook URL using the provided JWT token.
 
 **Headers:**
 ```
-Authorization: <accessToken>
+Authorization: <jwtToken>
 ```
 
 **Response:**
 The response from the webhook API.
 
 #### POST /sql/submit
-Submits the SQL query to the webhook URL using the stored access token or one provided in the header.
+Submits the SQL query to the webhook URL using the stored JWT token or one provided in the header.
 
 **Headers (optional):**
 ```
-Authorization: <accessToken>
+Authorization: <jwtToken>
 ```
 
 **Response:**
 The response from the webhook API.
-
-#### POST /sql/generate-webhook
-Attempts to generate a new webhook and obtain an access token (may not work with the current API).
-
-**Response:**
-```
-Webhook generated successfully. Access token received.
-```
-or
-```
-Error generating webhook: <error message>
-```
 
 #### GET /sql/query
 Returns the SQL query that will be submitted.
@@ -106,7 +108,7 @@ Returns the SQL query that will be submitted.
 ```
 
 #### GET /sql/status
-Returns the current status of the webhook and access token.
+Returns the current status of the webhook and JWT token.
 
 **Response:**
 ```json

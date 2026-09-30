@@ -1,6 +1,7 @@
 com\bajaj\bfhl\model\BfhlRequest.class
 com\bajaj\bfhl\service\SqlSubmissionService.class
 com\bajaj\bfhl\controller\BfhlController.class
+com\bajaj\bfhl\service\JwtService.class
 com\bajaj\bfhl\model\JsonResponse.class
 com\bajaj\bfhl\controller\SqlSubmissionController.class
 com\bajaj\bfhl\service\BfhlService.class

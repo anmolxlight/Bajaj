@@ -64,4 +64,37 @@ public class SqlSubmissionController {
         status.put("webhookUrl", "https://bfhldevapigw.healthrx.co.in/hiring/testWebhook/JAVA");
         return ResponseEntity.ok(status);
     }
+    
+    @PostMapping("/test-webhook")
+    public ResponseEntity<String> testWebhook(
+            @RequestHeader(value = "Authorization", required = false) String authToken) {
+        
+        StringBuilder result = new StringBuilder();
+        result.append("Testing webhook with different authentication methods:\n\n");
+        
+        // Method 1: Try with Bearer token
+        if (authToken != null && !authToken.isEmpty()) {
+            result.append("1. Using provided token: ").append(authToken).append("\n");
+            String response = sqlSubmissionService.submitSqlQuery(authToken);
+            result.append("Response: ").append(response).append("\n\n");
+        }
+        
+        // Method 2: Try with Bearer prefix
+        if (authToken != null && !authToken.isEmpty() && !authToken.startsWith("Bearer ")) {
+            String bearerToken = "Bearer " + authToken;
+            result.append("2. Using Bearer prefix: ").append(bearerToken).append("\n");
+            String response = sqlSubmissionService.submitSqlQuery(bearerToken);
+            result.append("Response: ").append(response).append("\n\n");
+        }
+        
+        // Method 3: Try with stored token
+        String storedToken = sqlSubmissionService.getAccessToken();
+        if (storedToken != null && !storedToken.isEmpty()) {
+            result.append("3. Using stored token: ").append(storedToken).append("\n");
+            String response = sqlSubmissionService.submitSqlQuery(storedToken);
+            result.append("Response: ").append(response).append("\n\n");
+        }
+        
+        return ResponseEntity.ok(result.toString());
+    }
 } 
